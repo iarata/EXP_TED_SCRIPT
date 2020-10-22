@@ -1,15 +1,23 @@
 import requests
 from bs4 import BeautifulSoup as soup
 
+def main() -> str:
+    userInput = str(input("👉 Enter the url of TED Talks (available at: https://www.ted.com/talks): ")).replace(" ", "").replace("\n", "")
 
-client = requests.get("https://www.ted.com/talks/greg_gage_how_to_control_someone_else_s_arm_with_your_brain/transcript?language=en").content 
-psClient = soup(client, "html.parser")
+    if "/transcript" not in userInput:
+        userInput = userInput + "/transcript"
+    
+    request = requests.get(userInput).content
+    soup_element = soup(request, "html.parser")
 
-transcript = psClient.findAll("p")
+    transcript = soup_element.findAll("p")
+
+    results = ""
+    for texts in transcript:
+        results += texts.text.replace("\t", "")
+
+    return results
 
 
-cleanedData = ""
-for item in transcript:
-    cleanedData += item.text.replace('\t','')
-
-print(cleanedData)
+if __name__ == "__main__":
+    print(main())
